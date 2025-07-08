@@ -1,128 +1,231 @@
-# Policy Pulse: A Power BI Deep Dive into Insurance Cost Factors
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Policy Pulse | Insurance Cost Power BI Analysis</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      scroll-behavior: smooth;
+    }
 
-This repository contains a comprehensive analysis of an insurance dataset, examining the various factors that influence insurance costs. The dataset includes information on applicant demographics, health indicators, lifestyle choices, and engagement with healthcare services. The insights derived from this analysis can help refine pricing models, identify key risk factors, and develop targeted strategies for customer engagement and product development.
+    header {
+      background-color: #2a5d7c;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
 
----
+    nav a {
+      color: white;
+      margin: 0 1rem;
+      text-decoration: none;
+      font-weight: 500;
+    }
 
-## 🌐 Live Dashboard
+    nav a:hover {
+      text-decoration: underline;
+    }
 
-<a href="https://policy-pulse.vercel.app" target="_blank" rel="noopener noreferrer">
-  <img src="https://vercel.com/button" alt="View Live on Vercel" width="150"/>
-</a>
+    .container {
+      padding: 2rem;
+      max-width: 1100px;
+      margin: auto;
+    }
 
-> **[Click here to view the interactive dashboard on Vercel](https://policy-pulse.vercel.app)**
+    .dashboard {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      margin-bottom: 2.5rem;
+      overflow: hidden;
+    }
 
----
+    .dashboard h2 {
+      margin: 0;
+      padding: 1.2rem 1.5rem;
+      background-color: #214f4b;
+      color: white;
+      cursor: pointer;
+    }
 
-## Objectives Visualized
+    .dashboard-content {
+      display: none;
+      padding: 1.5rem;
+    }
 
-- **Health Factors & Insurance Costs:**  
-  Examines the relationship between cholesterol levels, heart disease history, smoking status, and average insurance costs.
+    .dashboard img {
+      width: 100%;
+      border-radius: 8px;
+      margin: 1rem 0;
+      transition: transform 0.3s;
+    }
 
-- **Lifestyle & Demographic Influence:**  
-  Explores how factors like occupation, age, gender, exercise habits, alcohol consumption, and location correlate with insurance expenses.
+    .dashboard img:hover {
+      transform: scale(1.02);
+    }
 
-- **Customer Engagement & Tenure:**  
-  Investigates the link between regular check-ups, doctor visits, years of insurance with the company, and associated insurance costs.
+    .dashboard a {
+      display: inline-block;
+      margin-top: 0.5rem;
+      color: #1a73e8;
+      text-decoration: none;
+      font-weight: 500;
+    }
 
----
+    .dashboard a:hover {
+      text-decoration: underline;
+    }
 
-## 1. Health Factors & Insurance Costs Report
+    .vercel-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 2rem auto 2rem auto;
+      gap: 0.5rem;
+    }
 
-This section focuses on how various health metrics directly influence insurance costs, helping to identify key risk factors.
+    .vercel-link img {
+      height: 28px;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
 
-**Visual Representation:**  
-![Health Factors & Insurance Costs Report](image/HFIC.png)
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
 
-### Visuals
+    @media (max-width: 768px) {
+      nav a {
+        display: block;
+        margin: 0.5rem 0;
+      }
+    }
+  </style>
+</head>
+<body>
 
-- **Average Insurance Cost per Cholesterol Level** (Bar Chart)
-- **Cholesterol Level Categories** (Pie Chart)
-- **Major Disease History by Gender and Smoking Status** (Treemap)
-- **Avg Insurance Cost Per Smoking Status & Heart Disease** (Bar Chart)
-- **Average Daily Steps** (Gauge)
+  <header>
+    <h1>Policy Pulse: Power BI Insurance Cost Analysis</h1>
+    <nav>
+      <a href="#health">Health Factors & Insurance Costs</a>
+      <a href="#lifestyle">Lifestyle & Demographics</a>
+      <a href="#engagement">Customer Engagement</a>
+      <a href="#recommendations">Recommendations</a>
+    </nav>
+  </header>
 
-**Key Insights:**
+  <div class="vercel-link">
+    <a href="https://policy-pulse.vercel.app" target="_blank" rel="noopener noreferrer">
+      <img src="https://assets.vercel.com/image/upload/v1662130559/front/favicon/vercel/180x180.png" alt="Vercel Logo"/>
+      <span style="font-size:1.15rem;font-weight:500;">View Interactive Dashboard on Vercel</span>
+    </a>
+  </div>
 
-- The "Average Insurance Cost per Cholesterol Level" chart shows the "200 to 225" mg/dL range with the highest average cost, followed by "125 to 150" and "150 to 175". The "225 to 250" category is anomalously lowest.
-- "Cholesterol Level Categories" pie chart: 79.93% "Lower Risk", 11.85% "Moderate Risk", 8.22% "Higher Risk".
-- Higher insurance costs are observed among those with heart disease history, with smoking status further differentiating costs.
-- Average daily steps: 5.22K, indicating moderate applicant activity.
+  <div class="container">
 
----
+    <div class="dashboard" id="health">
+      <h2 onclick="toggleContent(this)">Health Factors & Insurance Costs Report</h2>
+      <div class="dashboard-content">
+        <p>
+          This section analyzes how health metrics—cholesterol, heart disease history, smoking status, and daily steps—impact insurance costs.
+        </p>
+        <img src="images/HFIC.png" alt="Health Factors & Insurance Costs Report">
+        <ul>
+          <li><b>Average Insurance Cost per Cholesterol Level (Bar Chart):</b> Highest in "200 to 225" mg/dL, lowest in "225 to 250".</li>
+          <li><b>Cholesterol Level Categories (Pie Chart):</b> 79.93% lower risk, 11.85% moderate, 8.22% higher risk.</li>
+          <li><b>Disease History by Gender/Smoking (Treemap):</b> Heart disease and smoking status strongly affect costs.</li>
+          <li><b>Average Daily Steps (Gauge):</b> 5.22K, moderate activity.</li>
+        </ul>
+      </div>
+    </div>
 
-## 2. Lifestyle and Demographic Influence on Insurance Cost Report
+    <div class="dashboard" id="lifestyle">
+      <h2 onclick="toggleContent(this)">Lifestyle and Demographic Influence on Insurance Cost Report</h2>
+      <div class="dashboard-content">
+        <p>
+          Explores how occupation, age, gender, exercise, alcohol, and location influence insurance expenses.
+        </p>
+        <img src="images/LDIIC.png" alt="Lifestyle and Demographic Influence on Insurance Cost">
+        <ul>
+          <li><b>Insurance Cost per Occupation (Bar Chart):</b> "Student" and "Business" highest.</li>
+          <li><b>By Gender (Donut Chart):</b> Males 65.63%, females 34.37% of costs.</li>
+          <li><b>By Exercise Category (Bar Chart):</b> "Moderate" exercise highest total cost.</li>
+          <li><b>By Age Groups (Line Chart):</b> Sharp cost rise after age 50–59.</li>
+          <li><b>By Alcohol Consumption (Bar Chart):</b> "Rare" highest, "Daily" lowest.</li>
+          <li><b>By Location (Map):</b> Regional variation in premiums.</li>
+        </ul>
+      </div>
+    </div>
 
-This section explores how an applicant’s lifestyle and demographic information correlate with insurance costs, providing insights for customer segmentation.
+    <div class="dashboard" id="engagement">
+      <h2 onclick="toggleContent(this)">Customer Engagement and Insurance Cost Analysis Report</h2>
+      <div class="dashboard-content">
+        <p>
+          Examines how engagement with healthcare, doctor visits, insurance tenure, BMI, and glucose levels impact costs.
+        </p>
+        <img src="images/CEICA.png" alt="Customer Engagement and Insurance Cost Analysis">
+        <ul>
+          <li><b>Top 5 Doctor Visits (Funnel Chart):</b> 2 visits most common.</li>
+          <li><b>By Doctor Visits (Bar Chart):</b> 10 visits = highest average cost.</li>
+          <li><b>By Insurance Years (Bar Chart):</b> Years 3 and 7 = highest average costs.</li>
+          <li><b>Average Daily Steps by Age (Line):</b> Peaks at 20–29, 40–49.</li>
+          <li><b>Average BMI (Gauge):</b> 31.39</li>
+          <li><b>Average Glucose Level (Gauge):</b> 167.53</li>
+        </ul>
+      </div>
+    </div>
 
-**Visual Representation:**  
-![Lifestyle and Demographic Influence on Insurance Cost](image/LDIIC.png)
+    <div class="dashboard" id="recommendations">
+      <h2 onclick="toggleContent(this)">Recommendations & Conclusion</h2>
+      <div class="dashboard-content">
+        <ul>
+          <li><b>Refine Risk Assessment for Cholesterol:</b> Investigate anomalies in "225 to 250" mg/dL group.</li>
+          <li><b>Targeted Occupation Marketing:</b> Develop products for "Student" and "Business" groups.</li>
+          <li><b>Gender-Specific Product Review:</b> Review higher male costs.</li>
+          <li><b>Promote Preventative Care:</b> Incentivize check-ups and step goals.</li>
+          <li><b>Analyze Customer Lifetime Value:</b> Use insurance tenure data.</li>
+          <li><b>Geographic Risk Profiling:</b> Adjust pricing by region.</li>
+        </ul>
+        <p>
+          The Power BI dashboards reveal the complex interplay of health, lifestyle, demographics, and engagement on insurance costs. Leveraging these insights enables better risk assessment, product innovation, and customer retention.
+        </p>
+      </div>
+    </div>
+  </div>
 
-### Visuals
+  <div class="footer">
+    <p>© 2025 Policy Pulse | Power BI Insurance Analysis · All rights reserved</p>
+    <p>
+      <a href="https://github.com/Eric-Inkoom-Ayitey/policy-pulse" target="_blank" style="color:#2a5d7c;">View this project on GitHub</a>
+    </p>
+  </div>
 
-- **Insurance Cost per Occupation** (Bar Chart)
-- **Insurance Cost by Gender** (Donut Chart)
-- **Insurance Cost per Exercise Category** (Bar Chart)
-- **Average Insurance Cost by Age Groups** (Line Chart)
-- **Insurance Cost by Alcohol Consumption** (Bar Chart)
-- **Insurance Cost per Location** (Map Visual)
+  <script>
+    function toggleContent(header) {
+      const content = header.nextElementSibling;
+      const all = document.querySelectorAll('.dashboard-content');
+      all.forEach(el => {
+        if (el !== content) el.style.display = 'none';
+      });
+      content.style.display = content.style.display === 'block' ? 'none' : 'block';
+    }
+    // Optionally open first section by default
+    document.addEventListener('DOMContentLoaded', function() {
+      const firstContent = document.querySelector('.dashboard-content');
+      if (firstContent) firstContent.style.display = 'block';
+    });
+  </script>
 
-**Key Insights:**
-
-- "Student" and "Business" occupations show highest total insurance costs.
-- Males account for 65.63% of total insurance cost; females, 34.37%.
-- "Moderate" exercise category leads to highest total insurance cost.
-- Significant increase in average insurance cost for age 50-59 and above.
-- "Rare" alcohol consumption segment has highest total insurance cost.
-- Geographic variation in insurance costs observed.
-
----
-
-## 3. Customer Engagement and Insurance Cost Analysis Report
-
-This section explores the relationship between customer engagement in health and insurance coverage, and its effect on costs.
-
-**Visual Representation:**  
-![Customer Engagement and Insurance Cost Analysis](image/CEICA.png)
-
-### Visuals
-
-- **Top 5 Doctor Visits** (Funnel Chart)
-- **Average Insurance Cost by Doctor Visits Last Year** (Bar Chart)
-- **Average Insurance Cost by Insurance Years** (Bar Chart)
-- **Average Daily Steps by Age Groups** (Line Chart)
-- **Average BMI** (Gauge)
-- **Average Glucose Level** (Gauge)
-
-**Key Insights:**
-
-- 2 doctor visits is the most common, with the highest average insurance cost at 10 visits ($40K).
-- Years 3 and 7 show highest average costs by insurance tenure.
-- Activity levels (steps) peak at ages 20-29 and 40-49.
-- Average BMI: 31.39; Average Glucose: 167.53; Average Insurance Cost: $27.15K.
-
----
-
-## Recommendations
-
-- **Refine Risk Assessment:** Investigate low costs in the "225 to 250" cholesterol category.
-- **Targeted Marketing:** Develop products for "Student" and "Business" occupations.
-- **Gender-Specific Product Review:** Analyze causes for higher costs among males.
-- **Promote Preventative Care:** Incentivize regular check-ups and step goals.
-- **Long-Term Value Analysis:** Analyze cost trends by insurance tenure.
-- **Geographic Risk Profiling:** Adjust pricing or availability based on location.
-
----
-
-## Conclusion
-
-The Power BI dashboards in this repository reveal intricate relationships between health, lifestyle, demographics, customer engagement, and insurance costs. Leveraging these insights enables better risk assessment, product development, marketing, and customer retention strategies. Ongoing KPI monitoring will be crucial for adapting to market changes.
-
----
-
-## Images
-
-- ![Policy Pulse: A Power BI Deep Dive into Insurance Cost Factors](image/Dashboard.png)
-- ![Health Factors & Insurance Costs Report](image/HFIC.png)
-- ![Lifestyle and Demographic Influence on Insurance Cost](image/LDIIC.png)
-- ![Customer Engagement and Insurance Cost Analysis](image/CEICA.png)
+</body>
+</html>
